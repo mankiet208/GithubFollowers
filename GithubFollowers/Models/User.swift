@@ -19,4 +19,11 @@ struct User: Codable {
     let following: Int
     let htmlUrl: String
     let createdAt: String
+    
+    var createdAtFormatted: String {
+        guard let date = createdAt.convertToDate(with: DateFormatConstant.stantard) else {
+            return "invalid_createdAt"
+        }
+        return date.convertToMonthYear(with: DateFormatConstant.monthYear)
+    }
 }

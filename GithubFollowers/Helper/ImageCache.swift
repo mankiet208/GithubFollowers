@@ -18,8 +18,10 @@ class ImageCache {
             if let image = self.cache.object(forKey: urlString as NSString) {
                 return image
             } else {
-                let url = URL(string: urlString)
-                let request = URLRequest(url: url!)
+                guard let url = URL(string: urlString) else {
+                    return nil
+                }
+                let request = URLRequest(url: url)
                 let (data, response) = try await URLSession.shared.data(for: request)
 
                 guard let response = response as? HTTPURLResponse,

@@ -13,7 +13,7 @@ class FollowerListVM: BaseVM {
     @Published private(set) var followers: [Follower] = []
     @Published private(set) var filteredFollowers: [Follower] = []
     
-    private let username: String
+    private var username: String
     private let userRepository: UserRepository
     
     private var currentQuery: FollowerQuery
@@ -29,7 +29,11 @@ class FollowerListVM: BaseVM {
         self.currentQuery = FollowerQuery(username: username)
     }
     
-    func search() {
+    func setUsername(_ username: String) {
+        self.username = username
+    }
+    
+    func fetch() {
         fetchFollowers(query: currentQuery)
     }
     
@@ -45,12 +49,18 @@ class FollowerListVM: BaseVM {
         }
     }
     
+    func updateSearchStatus(isSearching: Bool) {
+        self.isSearching = isSearching
+    }
+    
     func resetFilter() {
         filteredFollowers.removeAll()
     }
     
-    func updateSearchStatus(isSearching: Bool) {
-        self.isSearching = isSearching
+    func resetAll() {
+        currentQuery = FollowerQuery(username: username)
+        followers.removeAll()
+        filteredFollowers.removeAll()
     }
 }
 

@@ -26,4 +26,11 @@ class GFAvatarImageView: UIImageView {
         layer.masksToBounds = true
         translatesAutoresizingMaskIntoConstraints = false
     }
+    
+    func fetchImage(from urlString: String) {
+        Task { @MainActor in
+            let image = await ImageCache.shared.loadImage(for: urlString)
+            self.image = image ?? placeholderImage
+        }
+    }
 }

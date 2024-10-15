@@ -49,10 +49,6 @@ class FollowerCell: UICollectionViewCell {
     
     func bind(follower: Follower) {
         usernameLabel.text = follower.login
-        
-        Task { @MainActor in
-            let image = await ImageCache.shared.loadImage(for: follower.avatarUrl)
-            avatarImageView.image = image
-        }
+        avatarImageView.fetchImage(from: follower.avatarUrl)
     }
 }

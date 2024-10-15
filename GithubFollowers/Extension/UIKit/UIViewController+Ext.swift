@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SafariServices
 
 extension UIViewController {
     
@@ -19,10 +20,11 @@ extension UIViewController {
         }
     }
     
-    func showEmptyStateView(with message: String, in view: UIView) {
-        let emptyView = GFEmptyStateView(message: message)
-        emptyView.frame = view.bounds
-        view.addSubview(emptyView)
+    func openSafari(with url: URL, tintColor: UIColor? = nil) {
+        let safariVC = SFSafariViewController(url: url)
+        safariVC.preferredControlTintColor = tintColor
+        
+        showDetailViewController(safariVC, sender: self)
     }
 }
 
@@ -31,6 +33,25 @@ extension UIViewController {
     func add(_ child: UIViewController) {
         addChild(child)
         view.addSubview(child.view)
+        child.didMove(toParent: self)
+    }
+    
+    func add(_ child: UIViewController, to containerView: UIView, useAutoLayout: Bool = true) {
+        addChild(child)
+        containerView.addSubview(child.view)
+        
+        if useAutoLayout {
+            child.view.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+                child.view.topAnchor.constraint(equalTo: containerView.topAnchor),
+                child.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                child.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                child.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            ])
+        } else {
+            child.view.frame = containerView.bounds
+        }
         child.didMove(toParent: self)
     }
     

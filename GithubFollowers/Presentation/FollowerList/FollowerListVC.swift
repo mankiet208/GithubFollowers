@@ -8,6 +8,10 @@
 import UIKit
 import Combine
 
+protocol FollowerListVCDelegate: AnyObject {
+    func didRequestFollowers(for username: String)
+}
+
 class FollowerListVC: BaseVC {
     
     enum Section {
@@ -35,6 +39,8 @@ class FollowerListVC: BaseVC {
         return clv
     }()
     
+    var emptyView: GFEmptyStateView?
+    
     var dataSource: UICollectionViewDiffableDataSource<Section, Follower>!
         
     private let viewModel: FollowerListVM
@@ -55,7 +61,7 @@ class FollowerListVC: BaseVC {
         configureDataSource()
         configureBinding()
         
-        viewModel.search()
+        viewModel.fetch()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -103,6 +109,8 @@ class FollowerListVC: BaseVC {
                 if followers.isEmpty {
                     let message = "This user doesn't have any followers. Go follow them 👍."
                     self.showEmptyStateView(with: message, in: self.view)
+                } else {
+                    self.hideEmptyStateView()
                 }
                 self.updateData(with: followers)
             }
@@ -162,6 +170,19 @@ class FollowerListVC: BaseVC {
 
         dataSource.apply(snapshot, animatingDifferences: true)
     }
+    
+    private func showEmptyStateView(with message: String, in view: UIView) {
+        self.emptyView = GFEmptyStateView(message: message)
+        emptyView!.frame = view.bounds
+        view.addSubview(emptyView!)
+    }
+    
+    private func hideEmptyStateView() {
+        if emptyView != nil {
+            emptyView?.removeFromSuperview()
+            emptyView = nil
+        }
+    }
 }
 
 extension FollowerListVC: UICollectionViewDelegate {
@@ -187,6 +208,8 @@ extension FollowerListVC: UICollectionViewDelegate {
             userRepository: userRepo
         )
         let userInfoVC = UserInfoVC(viewModel: userInfoVM)
+        userInfoVC.delegate = self
+        
         let nav = UINavigationController(rootViewController: userInfoVC)
         
         showDetailViewController(nav, sender: self)
@@ -210,5 +233,18 @@ extension FollowerListVC: UISearchResultsUpdating, UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         viewModel.updateSearchStatus(isSearching: false)
         viewModel.resetFilter()
+    }
+}
+
+extension FollowerListVC: FollowerListVCDelegate {
+    
+    func didRequestFollowers(for username: String) {
+        title = username
+        viewModel.setUsername(username)
+        viewModel.resetAll()
+        
+        collectionView.setContentOffset(.zero, animated: true) // Scroll up
+        
+        viewModel.fetch()
     }
 }
