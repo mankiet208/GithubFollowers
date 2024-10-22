@@ -22,7 +22,7 @@ enum APIError: Error {
 
 extension APIError {
     
-    var localizedDescription: String {
+    var description: String {
         switch self {
         case .invalidPath:
             return "Invalid Path"

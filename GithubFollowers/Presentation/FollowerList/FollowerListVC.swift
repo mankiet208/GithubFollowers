@@ -72,6 +72,13 @@ class FollowerListVC: BaseVC {
     override func configureVC() {
         super.configureVC()
         navigationController?.navigationBar.prefersLargeTitles = true
+        
+        let addButton = UIBarButtonItem(
+            barButtonSystemItem: .add,
+            target: self,
+            action: #selector(addAction)
+        )
+        navigationItem.rightBarButtonItem = addButton
     }
     
     private func configureCollectionView() {
@@ -182,6 +189,10 @@ class FollowerListVC: BaseVC {
             emptyView?.removeFromSuperview()
             emptyView = nil
         }
+    }
+    
+    @objc private func addAction() {
+        viewModel.addFavoriteUser()
     }
 }
 

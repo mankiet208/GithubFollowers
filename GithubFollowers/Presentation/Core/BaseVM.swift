@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-enum LoadState {
+enum LoadState: Equatable {
     case idle
     case loading
     case loaded

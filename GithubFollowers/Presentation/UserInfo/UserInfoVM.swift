@@ -48,8 +48,7 @@ extension UserInfoVM {
             self.user = user
         }
 
-        userRepository
-            .fetchUserInfo(username: username)
+        userRepository.fetchUserInfo(username: username)
             .sink(
                 receiveCompletion: completionHandler,
                 receiveValue: valueHandler

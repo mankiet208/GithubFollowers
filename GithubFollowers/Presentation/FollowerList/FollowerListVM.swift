@@ -12,6 +12,7 @@ class FollowerListVM: BaseVM {
     
     @Published private(set) var followers: [Follower] = []
     @Published private(set) var filteredFollowers: [Follower] = []
+    @Published private(set) var addFavoriteState: LoadState = .idle
     
     private var username: String
     private let userRepository: UserRepository
@@ -19,6 +20,7 @@ class FollowerListVM: BaseVM {
     private var currentQuery: FollowerQuery
     private var hasMoreFollowers: Bool = true
     private(set) var isSearching: Bool = false
+    private var favoriteUser: User?
     
     init(
         username: String,
@@ -62,6 +64,25 @@ class FollowerListVM: BaseVM {
         followers.removeAll()
         filteredFollowers.removeAll()
     }
+    
+    func addFavoriteUser() {
+        getUserInfo(username: self.username) { [weak self] user in
+            guard let self = self else {
+                return
+            }
+            
+            let favorite = Follower(login: user.login, avatarUrl: user.avatarUrl)
+            
+            PersistenceManager.update(favorite: favorite, with: .add) { error in
+                if let err = error {
+                    print("[ERROR] \(err)")
+                    return
+                }
+                
+                print("[SUCCESS] Add favorite user \(self.username)")
+            }
+        }
+    }
 }
 
 extension FollowerListVM {
@@ -72,7 +93,11 @@ extension FollowerListVM {
         let completionHandler: (Subscribers.Completion<Error>) -> Void = { [weak self] completion in
             switch completion {
             case .failure(let error):
-                self?.state = .error(error.localizedDescription)
+                if let error = error as? APIError {
+                    self?.state = .error(error.description)
+                } else {
+                    self?.state = .error(error.localizedDescription)
+                }
             case .finished:
                 self?.state = .loaded
             }
@@ -87,8 +112,34 @@ extension FollowerListVM {
             self.followers.append(contentsOf: items)
         }
 
-        userRepository
-            .fetchFollowerList(query: query)
+        userRepository.fetchFollowerList(query: query)
+            .sink(
+                receiveCompletion: completionHandler,
+                receiveValue: valueHandler
+            )
+            .store(in: &bindings)
+    }
+    
+    private func getUserInfo(username: String, completion: @escaping (User) -> Void)  {
+        addFavoriteState = .loading
+        
+        let completionHandler: (Subscribers.Completion<Error>) -> Void = { [weak self] completion in
+            switch completion {
+            case .failure(let error):
+                if let error = error as? APIError {
+                    self?.addFavoriteState = .error(error.description)
+                } else {
+                    self?.addFavoriteState = .error(error.localizedDescription)
+                }
+            case .finished:
+                self?.addFavoriteState = .loaded
+            }
+        }
+        let valueHandler: (User) -> Void = { user in
+            completion(user)
+        }
+        
+        userRepository.fetchUserInfo(username: username)
             .sink(
                 receiveCompletion: completionHandler,
                 receiveValue: valueHandler

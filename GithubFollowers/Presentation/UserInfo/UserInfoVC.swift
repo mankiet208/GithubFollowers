@@ -58,10 +58,6 @@ class UserInfoVC: BaseVC {
         navigationItem.rightBarButtonItem = doneButton
     }
     
-    @objc func doneAction() {
-        dismiss(animated: true)
-    }
-    
     private func configureUI() {
         itemViews = [headerView, itemViewOne, itemViewTwo, dateLabel]
         
@@ -129,6 +125,10 @@ class UserInfoVC: BaseVC {
         self.add(followerItemVC, to: self.itemViewTwo)
         
         self.dateLabel.text = "Github since \(user.createdAtFormatted)"
+    }
+    
+    @objc private func doneAction() {
+        dismiss(animated: true)
     }
 }
 
