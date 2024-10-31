@@ -28,12 +28,14 @@ class GFAlertVC: UIViewController {
     var alertTitle: String?
     var message: String?
     var buttonTitle: String?
+    var buttonAction: (() -> Void)?
     
-    init(alertTitle: String, message: String, buttonTitle: String) {
+    init(alertTitle: String, message: String, buttonTitle: String, buttonAction: (() -> Void)?) {
         super.init(nibName: nil, bundle: nil)
         self.alertTitle = alertTitle
         self.message = message
         self.buttonTitle = buttonTitle
+        self.buttonAction = buttonAction
     }
     
     required init?(coder: NSCoder) {
@@ -77,7 +79,7 @@ class GFAlertVC: UIViewController {
     func configureActionButton() {
         containerView.addSubview(actionButton)
         actionButton.setTitle(buttonTitle ?? "OK", for: .normal)
-        actionButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
+        actionButton.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
             actionButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -PADDING),
@@ -87,8 +89,9 @@ class GFAlertVC: UIViewController {
         ])
     }
     
-    @objc func dismissVC() {
+    @objc func didTapButton() {
         dismiss(animated: true)
+        buttonAction?()
     }
     
     func configureMessageLabel() {

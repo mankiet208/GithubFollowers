@@ -31,14 +31,14 @@ class UserInfoVM: BaseVM {
 extension UserInfoVM {
     
     private func fetchUserInfo(username: String) {
-        state = .loading
+        loadState = .loading
 
         let completionHandler: (Subscribers.Completion<Error>) -> Void = { [weak self] completion in
             switch completion {
             case .failure(let error):
-                self?.state = .error(error.localizedDescription)
+                self?.loadState = .error(error.localizedDescription)
             case .finished:
-                self?.state = .loaded
+                self?.loadState = .loaded
             }
         }
         let valueHandler: (User) -> Void = { [weak self] user in

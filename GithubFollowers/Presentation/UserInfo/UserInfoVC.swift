@@ -97,7 +97,7 @@ class UserInfoVC: BaseVC {
             }
             .store(in: &bindings)
         
-        viewModel.$state
+        viewModel.$loadState
             .dropFirst()
             .receive(on: RunLoop.main)
             .sink { [weak self] state in

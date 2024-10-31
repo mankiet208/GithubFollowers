@@ -11,15 +11,8 @@ class FollowerCell: UICollectionViewCell {
     
     static let identifier = "FollowerCell"
     
-    private lazy var avatarImageView: GFAvatarImageView = {
-        let imageView = GFAvatarImageView(frame: .zero)
-        return imageView
-    }()
-    
-    private lazy var usernameLabel: GFTitleLabel = {
-        let label = GFTitleLabel(textAlignment: .center, fontSize: 16)
-        return label
-    }()
+    private let avatarImageView = GFAvatarImageView(frame: .zero)
+    private let usernameLabel = GFTitleLabel(textAlignment: .center, fontSize: 16)
         
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -39,7 +32,7 @@ class FollowerCell: UICollectionViewCell {
             avatarImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
             avatarImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
             avatarImageView.heightAnchor.constraint(equalTo: avatarImageView.widthAnchor),
-            //
+
             usernameLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: 12),
             usernameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
             usernameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 8),
@@ -47,7 +40,7 @@ class FollowerCell: UICollectionViewCell {
         ])
     }
     
-    func bind(follower: Follower) {
+    func setData(follower: Follower) {
         usernameLabel.text = follower.login
         avatarImageView.fetchImage(from: follower.avatarUrl)
     }

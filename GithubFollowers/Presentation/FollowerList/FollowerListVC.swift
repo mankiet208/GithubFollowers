@@ -25,10 +25,13 @@ class FollowerListVC: BaseVC {
             username: username,
             userRepository: userRepository
         )
-        return FollowerListVC(viewModel: followerListVM)
+        let vc = FollowerListVC(viewModel: followerListVM)
+        vc.title = username
+        
+        return vc
     }
     
-    lazy private var collectionView: UICollectionView = {
+    private lazy var collectionView: UICollectionView = {
         let layout = UICollectionView.createThreeColumnFlowLayout(in: view)
         let clv = UICollectionView(
             frame: view.bounds,
@@ -39,9 +42,9 @@ class FollowerListVC: BaseVC {
         return clv
     }()
     
-    var emptyView: GFEmptyStateView?
+    private var emptyView: GFEmptyStateView?
     
-    var dataSource: UICollectionViewDiffableDataSource<Section, Follower>!
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Follower>!
         
     private let viewModel: FollowerListVM
         
@@ -92,7 +95,21 @@ class FollowerListVC: BaseVC {
         ])
         
         collectionView.register(FollowerCell.self, forCellWithReuseIdentifier: FollowerCell.identifier)
-        
+    }
+    
+    private func configureDataSource() {
+        dataSource = UICollectionViewDiffableDataSource<Section, Follower>(collectionView: collectionView) {
+            collectionView, indexPath, follower in
+                
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: FollowerCell.identifier,
+                for: indexPath
+            ) as! FollowerCell
+            
+            cell.setData(follower: follower)
+                            
+            return cell
+        }
     }
     
     private func configureSearchController() {
@@ -138,7 +155,7 @@ class FollowerListVC: BaseVC {
             }
             .store(in: &bindings)
         
-        viewModel.$state
+        viewModel.$loadState
             .receive(on: RunLoop.main)
             .sink { [weak self] state in
                 guard let self = self else { return }
@@ -152,22 +169,6 @@ class FollowerListVC: BaseVC {
                 }
             }
             .store(in: &bindings)
-    }
-    
-    private func configureDataSource() {
-        dataSource = UICollectionViewDiffableDataSource<Section, Follower>(
-            collectionView: collectionView,
-            cellProvider: { collectionView, indexPath, follower in
-                
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: FollowerCell.identifier,
-                for: indexPath
-            ) as! FollowerCell
-            
-            cell.bind(follower: follower)
-                            
-            return cell
-        })
     }
     
     private func updateData(with followers: [Follower]) {

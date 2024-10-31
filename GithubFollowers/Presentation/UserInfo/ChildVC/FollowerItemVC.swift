@@ -16,7 +16,7 @@ class FollowerItemVC: InfoItemVC {
     
     private func configureData() {
         itemInfoViewOne.bindData(with: .followers, count: user.followers)
-        itemInfoViewTwo.bindData(with: .following, count: user.following)
+        itemInfoViewTwo.bindData(with: .followings, count: user.following)
         
         actionButton.set(backgroundColor: .systemGreen, title: "Get Followers")
         actionButton.addTarget(self, action: #selector(didTapAction), for: .touchUpInside)

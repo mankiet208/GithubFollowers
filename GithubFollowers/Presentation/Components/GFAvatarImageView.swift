@@ -8,9 +8,7 @@
 import UIKit
 
 class GFAvatarImageView: UIImageView {
-    
-    let placeholderImage = UIImage(named: "avatar-placeholder")!
-    
+        
     override init(frame: CGRect) {
         super.init(frame: frame)
         configure()
@@ -21,7 +19,7 @@ class GFAvatarImageView: UIImageView {
     }
     
     private func configure() {
-        image = placeholderImage
+        image = Images.githubAvatar
         layer.cornerRadius = 10
         layer.masksToBounds = true
         translatesAutoresizingMaskIntoConstraints = false
@@ -30,7 +28,7 @@ class GFAvatarImageView: UIImageView {
     func fetchImage(from urlString: String) {
         Task { @MainActor in
             let image = await ImageCache.shared.loadImage(for: urlString)
-            self.image = image ?? placeholderImage
+            self.image = image ?? Images.githubAvatar
         }
     }
 }

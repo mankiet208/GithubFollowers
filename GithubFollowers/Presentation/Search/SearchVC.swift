@@ -8,36 +8,38 @@
 import UIKit
 
 class SearchVC: BaseVC {
-    
+
     lazy private var logoImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "gh-logo")
+        imageView.image = Images.githubLogo
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-    
+
     private let usernameTextField = GFTextField()
     private let actionButton = GFButton(backgroundColor: .systemGreen, title: "Get Followers")
-    
+    private var logoTopConstraint: NSLayoutConstraint!
+
     private var isUsernameEntered: Bool {
         return !(usernameTextField.text?.isEmpty ?? true)
     }
 
     override func viewDidLoad() {
-        super.viewDidLoad()        
+        super.viewDidLoad()
         configureLogoImageView()
         configureTextField()
         configureButton()
         createDismissKeyboardGesture()
-        
+
         usernameTextField.text = "Sallen0400"
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: true)
+        usernameTextField.text = ""
     }
-    
+
     private func createDismissKeyboardGesture() {
         let tapGesture = UITapGestureRecognizer(
             target: self.view,
@@ -45,23 +47,30 @@ class SearchVC: BaseVC {
         )
         view.addGestureRecognizer(tapGesture)
     }
-    
+
     private func configureLogoImageView() {
         view.addSubview(logoImageView)
-                
+        
+        let topContraint: CGFloat = DeviceTypes.isiPhoneSEGen3rd ? 40 : 80
+        
+        logoTopConstraint = logoImageView.topAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.topAnchor,
+            constant: topContraint
+        )
+        logoTopConstraint.isActive = true
+        
         NSLayoutConstraint.activate([
-            logoImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
             logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logoImageView.widthAnchor.constraint(equalToConstant: 200),
             logoImageView.heightAnchor.constraint(equalToConstant: 200),
         ])
     }
-    
+
     private func configureTextField() {
         view.addSubview(usernameTextField)
-        
+
         usernameTextField.delegate = self
-        
+
         NSLayoutConstraint.activate([
             usernameTextField.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 48),
             usernameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
@@ -69,11 +78,11 @@ class SearchVC: BaseVC {
             usernameTextField.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
-    
+
     private func configureButton() {
         view.addSubview(actionButton)
         actionButton.addTarget(self, action: #selector(pushFollowerListVC), for: .touchUpInside)
-        
+
         NSLayoutConstraint.activate([
             actionButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
             actionButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
@@ -81,7 +90,7 @@ class SearchVC: BaseVC {
             actionButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
-    
+
     @objc private func pushFollowerListVC() {
         guard isUsernameEntered else {
             presentGFAlert(
@@ -92,17 +101,15 @@ class SearchVC: BaseVC {
             return
         }
         
-        if let username = usernameTextField.text {
-            let followerListVC = FollowerListVC.createInstance(with: username)
-            followerListVC.title = username
-            
-            show(followerListVC, sender: self)
-        }
+        usernameTextField.resignFirstResponder()
+
+        let followerListVC = FollowerListVC.createInstance(with: usernameTextField.text!)
+        show(followerListVC, sender: self)
     }
 }
 
 extension SearchVC: UITextFieldDelegate {
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         pushFollowerListVC()
         return true

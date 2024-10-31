@@ -9,7 +9,6 @@ import Foundation
 import Combine
 
 class FollowerListVM: BaseVM {
-    
     @Published private(set) var followers: [Follower] = []
     @Published private(set) var filteredFollowers: [Follower] = []
     @Published private(set) var addFavoriteState: LoadState = .idle
@@ -88,18 +87,18 @@ class FollowerListVM: BaseVM {
 extension FollowerListVM {
     
     private func fetchFollowers(query: FollowerQuery) {
-        state = .loading
+        loadState = .loading
 
         let completionHandler: (Subscribers.Completion<Error>) -> Void = { [weak self] completion in
             switch completion {
             case .failure(let error):
                 if let error = error as? APIError {
-                    self?.state = .error(error.description)
+                    self?.loadState = .error(error.description)
                 } else {
-                    self?.state = .error(error.localizedDescription)
+                    self?.loadState = .error(error.localizedDescription)
                 }
             case .finished:
-                self?.state = .loaded
+                self?.loadState = .loaded
             }
         }
         let valueHandler: ([Follower]) -> Void = { [weak self] items in

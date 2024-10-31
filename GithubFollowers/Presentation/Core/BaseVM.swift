@@ -16,7 +16,7 @@ enum LoadState: Equatable {
 }
 
 class BaseVM {
-    @Published var state: LoadState = .idle
+    @Published var loadState: LoadState = .idle
     
     var bindings = Set<AnyCancellable>()
 }

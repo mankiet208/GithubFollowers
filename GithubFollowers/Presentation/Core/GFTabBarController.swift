@@ -7,16 +7,15 @@
 
 import UIKit
 
-class RootVC: UITabBarController {
+class GFTabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureTabBar()
-        configureNavigationBar()
+        configure()
     }
     
-    func configureTabBar() {
+    func configure() {
         let searchNC = createSearchNC()
         let favoritesListNC = createFavoriteListNC()
         
@@ -24,9 +23,6 @@ class RootVC: UITabBarController {
         
         tabBar.tintColor = .systemGreen
         applyBlurEffect()
-    }
-    
-    func configureNavigationBar() {
         UINavigationBar.appearance().tintColor = .systemGreen
     }
     
@@ -41,7 +37,8 @@ class RootVC: UITabBarController {
     }
     
     func createFavoriteListNC() -> UINavigationController {
-        let favoritesListVC = FavoritesListVC()
+        let favoriteListVM = FavoriteListVM()
+        let favoritesListVC = FavoritesListVC(viewModel: favoriteListVM)
         favoritesListVC.title = "Favorite List"
         favoritesListVC.tabBarItem = UITabBarItem(tabBarSystemItem: .favorites, tag: 1)
         

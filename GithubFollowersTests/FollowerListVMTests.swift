@@ -44,7 +44,7 @@ final class FollowerListVMTests: XCTestCase {
             .sink { XCTAssertEqual($0, Constants.followers) }
             .store(in: &cancellables)
         
-        subject.$state
+        subject.$loadState
             .sink { XCTAssertEqual($0, .loaded) }
             .store(in: &cancellables)
     }
@@ -63,7 +63,7 @@ final class FollowerListVMTests: XCTestCase {
             .sink { XCTAssert($0.isEmpty) }
             .store(in: &cancellables)
         
-        subject.$state
+        subject.$loadState
             .sink { XCTAssertEqual($0, .error("500 - Server error")) }
             .store(in: &cancellables)
     }

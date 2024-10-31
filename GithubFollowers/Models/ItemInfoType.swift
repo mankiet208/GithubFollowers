@@ -5,10 +5,10 @@
 //  Created by Kiet Truong on 15/10/2024.
 //
 
-import Foundation
+import UIKit
 
 enum ItemInfoType {
-    case repos, gists, followers, following
+    case repos, gists, followers, followings
 }
 
 extension ItemInfoType {
@@ -21,7 +21,7 @@ extension ItemInfoType {
             return "Public Gists"
         case .followers:
             return "Followers"
-        case .following:
+        case .followings:
             return "Following"
         }
     }
@@ -29,13 +29,13 @@ extension ItemInfoType {
     var imageName: String {
         switch self {
         case .repos:
-            return "folder"
+            return SFSymbols.repos
         case .gists:
-            return "text.alignleft"
+            return SFSymbols.gists
         case .followers:
-            return "person.2"
-        case .following:
-            return "heart"
+            return SFSymbols.followers
+        case .followings:
+            return SFSymbols.followings
         }
     }
 }

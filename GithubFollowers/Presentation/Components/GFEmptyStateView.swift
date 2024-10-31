@@ -11,7 +11,7 @@ class GFEmptyStateView: UIView {
     
     lazy private var logoImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "empty-state-logo")
+        imageView.image = Images.emptyLogo
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
