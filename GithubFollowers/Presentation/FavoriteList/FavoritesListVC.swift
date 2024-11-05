@@ -19,6 +19,7 @@ class FavoritesListVC: BaseVC {
         table.rowHeight = 80
         table.dataSource = self
         table.delegate = self
+        table.register(FavoriteCell.self, forCellReuseIdentifier: FavoriteCell.identifier)
         return table
     }()
     
@@ -61,8 +62,6 @@ class FavoritesListVC: BaseVC {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
-        
-        tableView.register(FavoriteCell.self, forCellReuseIdentifier: FavoriteCell.identifier)
     }
     
     private func configureBinding() {

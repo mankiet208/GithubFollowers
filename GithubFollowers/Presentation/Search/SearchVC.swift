@@ -8,11 +8,11 @@
 import UIKit
 
 class SearchVC: BaseVC {
-
+    
     lazy private var logoImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = Images.githubLogo
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = Images.githubLogo
         return imageView
     }()
 
@@ -26,17 +26,21 @@ class SearchVC: BaseVC {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.addSubviews(logoImageView, usernameTextField, actionButton)
         configureLogoImageView()
         configureTextField()
         configureButton()
         createDismissKeyboardGesture()
-
-        usernameTextField.text = "Sallen0400"
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         usernameTextField.text = ""
     }
 
@@ -49,8 +53,6 @@ class SearchVC: BaseVC {
     }
 
     private func configureLogoImageView() {
-        view.addSubview(logoImageView)
-        
         let topContraint: CGFloat = DeviceTypes.isiPhoneSEGen3rd ? 40 : 80
         
         logoTopConstraint = logoImageView.topAnchor.constraint(
@@ -67,8 +69,6 @@ class SearchVC: BaseVC {
     }
 
     private func configureTextField() {
-        view.addSubview(usernameTextField)
-
         usernameTextField.delegate = self
 
         NSLayoutConstraint.activate([
@@ -80,7 +80,6 @@ class SearchVC: BaseVC {
     }
 
     private func configureButton() {
-        view.addSubview(actionButton)
         actionButton.addTarget(self, action: #selector(pushFollowerListVC), for: .touchUpInside)
 
         NSLayoutConstraint.activate([

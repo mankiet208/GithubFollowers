@@ -9,16 +9,7 @@ import UIKit
 
 class GFAlertVC: UIViewController {
     
-    lazy var containerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemBackground
-        view.layer.cornerRadius = 16
-        view.layer.borderWidth = 2
-        view.layer.borderColor = UIColor.white.cgColor
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
+    let containerView = GFAlertContainerView()
     let titleLabel = GFTitleLabel(textAlignment: .center, fontSize: 20)
     let messageLabel = GFBodyLabel(textAlignment: .center)
     let actionButton = GFButton(backgroundColor: .systemPink, title: "OK")
@@ -46,16 +37,15 @@ class GFAlertVC: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.75)
+        view.addSubviews(containerView, titleLabel, messageLabel, actionButton)
         
         configureContainer()
         configureTitleLabel()
-        configureActionButton()
         configureMessageLabel()
+        configureActionButton()
     }
     
     func configureContainer() {
-        view.addSubview(containerView)
-        
         NSLayoutConstraint.activate([
             containerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             containerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -65,7 +55,6 @@ class GFAlertVC: UIViewController {
     }
     
     func configureTitleLabel() {
-        containerView.addSubview(titleLabel)
         titleLabel.text = alertTitle ?? "???"
         
         NSLayoutConstraint.activate([
@@ -76,8 +65,19 @@ class GFAlertVC: UIViewController {
         ])
     }
     
+    func configureMessageLabel() {
+        messageLabel.text = message ?? "Something wen wrong!"
+        messageLabel.numberOfLines = 4
+        
+        NSLayoutConstraint.activate([
+            messageLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+            messageLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: PADDING),
+            messageLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -PADDING),
+            messageLabel.bottomAnchor.constraint(equalTo: actionButton.topAnchor, constant: -8)
+        ])
+    }
+    
     func configureActionButton() {
-        containerView.addSubview(actionButton)
         actionButton.setTitle(buttonTitle ?? "OK", for: .normal)
         actionButton.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
         
@@ -92,18 +92,5 @@ class GFAlertVC: UIViewController {
     @objc func didTapButton() {
         dismiss(animated: true)
         buttonAction?()
-    }
-    
-    func configureMessageLabel() {
-        containerView.addSubview(messageLabel)
-        messageLabel.text = message ?? "Something wen wrong!"
-        messageLabel.numberOfLines = 4
-        
-        NSLayoutConstraint.activate([
-            messageLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-            messageLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: PADDING),
-            messageLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -PADDING),
-            messageLabel.bottomAnchor.constraint(equalTo: actionButton.topAnchor, constant: -8)
-        ])
     }
 }

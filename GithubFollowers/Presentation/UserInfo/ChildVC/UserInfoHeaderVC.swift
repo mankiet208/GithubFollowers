@@ -67,12 +67,14 @@ class UserInfoHeaderVC: UIViewController {
     }
     
     private func configureUI() {
-        view.addSubview(avatarImageView)
-        view.addSubview(locationImageView)
-        view.addSubview(usernameLabel)
-        view.addSubview(nameLabel)
-        view.addSubview(locationLabel)
-        view.addSubview(bioLabel)
+        view.addSubviews(
+            avatarImageView,
+            locationImageView,
+            usernameLabel,
+            nameLabel,
+            locationLabel,
+            bioLabel
+        )
 
         NSLayoutConstraint.activate([
             //

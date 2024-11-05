@@ -48,14 +48,12 @@ class FollowerListVM: BaseVM {
         filteredFollowers = followers.filter {
             $0.login.lowercased().contains(text.lowercased())
         }
-    }
-    
-    func updateSearchStatus(isSearching: Bool) {
-        self.isSearching = isSearching
+        isSearching = true
     }
     
     func resetFilter() {
         filteredFollowers.removeAll()
+        isSearching = false
     }
     
     func resetAll() {

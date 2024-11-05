@@ -115,7 +115,6 @@ class FollowerListVC: BaseVC {
     private func configureSearchController() {
         let searchController = UISearchController()
         searchController.searchResultsUpdater = self
-        searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = "Search for a username"
         searchController.obscuresBackgroundDuringPresentation = false
         
@@ -228,23 +227,15 @@ extension FollowerListVC: UICollectionViewDelegate {
     }
 }
 
-extension FollowerListVC: UISearchResultsUpdating, UISearchBarDelegate {
+extension FollowerListVC: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
-        guard let filter = searchController.searchBar.text else { return }
-        
-        viewModel.updateSearchStatus(isSearching: true)
-
-        if filter.isEmpty {
+        guard let filter = searchController.searchBar.text, !filter.isEmpty else {
             viewModel.resetFilter()
-        } else {
-            viewModel.filterFollowers(with: filter)
+            return
         }
-    }
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        viewModel.updateSearchStatus(isSearching: false)
-        viewModel.resetFilter()
+        
+        viewModel.filterFollowers(with: filter)
     }
 }
 
@@ -255,7 +246,8 @@ extension FollowerListVC: FollowerListVCDelegate {
         viewModel.setUsername(username)
         viewModel.resetAll()
         
-        collectionView.setContentOffset(.zero, animated: true) // Scroll up
+        // Scroll to top
+        collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
         
         viewModel.fetch()
     }

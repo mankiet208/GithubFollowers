@@ -10,6 +10,12 @@ import UIKit
 //MARK: - CONSTRAINT
 extension UIView {
     
+    func addSubviews(_ views: UIView...) {
+        for view in views {
+            addSubview(view)
+        }
+    }
+    
     func pinEdgesToSuperView(useSafeLayoutGuide: Bool = false) {
         guard let superview = superview else {
             return
@@ -44,7 +50,7 @@ extension UIView {
 
 //MARK: - ANIMATION
 extension UIView {
-    
+        
     func addBlurEffect(with style: UIBlurEffect.Style = .regular) {
         let blurEffect = UIBlurEffect(style: style)
         let blurredEffectView = UIVisualEffectView(effect: blurEffect)

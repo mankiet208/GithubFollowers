@@ -24,6 +24,6 @@ struct User: Codable {
         guard let date = createdAt.convertToDate(with: DateFormatConstant.stantard) else {
             return "invalid_createdAt"
         }
-        return date.convertToMonthYear(with: DateFormatConstant.monthYear)
+        return date.convertToString(with: DateFormatConstant.monthYear)
     }
 }
